@@ -1,37 +1,10 @@
-#include <SFML/Graphics.hpp>
-#include <imgui-SFML.h>
-#include <imgui.h>
+#include "application.cpp"
 
-int main()
+int main(int argc, char* argv[])
 {
-    auto window = sf::RenderWindow(sf::VideoMode({1280u, 720u}), "CMake SFML Project");
-    window.setFramerateLimit(144);
-    if (!ImGui::SFML::Init(window))
-        return -1;
+    application ParticleLifeApp = application(atoi(argv[1]));
+    ParticleLifeApp.run();
+    ParticleLifeApp.clean();
 
-    sf::Clock clock;
-    while (window.isOpen())
-    {
-        while (const std::optional event = window.pollEvent())
-        {
-            ImGui::SFML::ProcessEvent(window, *event);
-
-            if (event->is<sf::Event::Closed>())
-            {
-                window.close();
-            }
-        }
-
-        ImGui::SFML::Update(window, clock.restart());
-
-        ImGui::Begin("Hello, world!");
-        ImGui::Button("Look at this pretty button");
-        ImGui::End();
-
-        window.clear();
-        ImGui::SFML::Render(window);
-        window.display();
-    }
-
-    ImGui::SFML::Shutdown();
+    return 0;
 }
