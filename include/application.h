@@ -9,7 +9,7 @@
 class application {
     public:
 
-        application();
+        application(int particleCount);
         ~application();
 
         void run();

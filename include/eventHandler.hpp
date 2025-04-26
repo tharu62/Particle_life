@@ -9,11 +9,6 @@ void EventHandler(std::optional<sf::Event> event, sf::View &view, sf::RenderWind
     if(const auto* PkeyPressed = event->getIf<sf::Event::KeyPressed>()){
         if(PkeyPressed->scancode == sf::Keyboard::Scan::P){
             paused = !paused;
-            if(paused){
-                std::cout << "Simulation paused!" << std::endl;
-            }else{
-                std::cout << "Simulation resumed!" << std::endl;
-            }
         }
     }
 

@@ -1,24 +1,32 @@
 #include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include <iostream>
+#include <chrono>
 
-#define DEFAULT_PARTICLE_COUNTER 100
-#define DEFAULT_PARTICLE_RADIUS 3
 
 #include "eventHandler.hpp"
 #include "setUp.hpp"
 #include "forceGeneration.hpp"
 #include "positionUpdate.hpp"
 #include "collsionUpdate.hpp"
+#include "ImGuiManager.hpp"
 
-int PARTICLE_COUNT;
+#define DEFAULT_PARTICLE_COUNTER 1000
+#define DEFAULT_PARTICLE_RADIUS 3
+#define DEFAULT_STRENGTH 30.f
 
+int PARTICLE_COUNT = DEFAULT_PARTICLE_COUNTER;
+int PARTICLE_RADIUS = DEFAULT_PARTICLE_RADIUS;
+float STRENGHT = DEFAULT_STRENGTH;
 
 class application {
 
     private:
         bool moving = false;
         bool paused = false;
+        bool opened = false;
+        bool resetted = false;
         sf::Vector2f oldPos;
         sf::CircleShape* particles;
         sf::Vector2f* acceleration;
@@ -28,6 +36,7 @@ class application {
         application(int particleCount = DEFAULT_PARTICLE_COUNTER){
             PARTICLE_COUNT = particleCount;
         };
+
 
         void clean(){
             ImGui::SFML::Shutdown();
@@ -41,23 +50,26 @@ class application {
             sf::View view = window.getDefaultView();
             view.setCenter({640, 360});
             view.setSize({1280, 720});
-            window.setFramerateLimit(100);
+            // window.setFramerateLimit(100);
             if (!ImGui::SFML::Init(window))
                 return;
 
             particles = new sf::CircleShape[PARTICLE_COUNT];
             acceleration =  new sf::Vector2f[PARTICLE_COUNT];
 
-            SetParticle(particles, DEFAULT_PARTICLE_RADIUS);
+            SetParticle(particles, PARTICLE_RADIUS);
 
+            clock_t start = 0;
+            clock_t end = 0;
             sf::Clock clock;
+            int framerate = 0;
             while (window.isOpen())
             {
+                start = std::clock();
                 while (const std::optional event = window.pollEvent())
                 {
-                    if(moving == false){
-                        ImGui::SFML::ProcessEvent(window, *event);
-                    }
+
+                    ImGui::SFML::ProcessEvent(window, *event);
                     EventHandler(event, view, window, oldPos, moving, paused);
                     
                 }
@@ -68,12 +80,11 @@ class application {
                     updatePosition(particles, acceleration);
                     // CollisionUpdate(particles, velocity);
 
-                    ImGui::SFML::Update(window, clock.restart());               
-                    ImGui::Begin("ImGui SFML window");
-                    ImGui::Button("+");
-                    ImGui::SameLine(30.f);
-                    ImGui::Button("-");
-                    ImGui::End();
+                    manageImGui(window, clock, opened, particles, framerate, PARTICLE_COUNT, PARTICLE_RADIUS, STRENGHT, resetted);
+                    if(resetted){
+                        resetted = false;
+                        resetParticles();
+                    }
 
                 }else{
                     ImGui::SFML::Update(window, clock.restart());
@@ -82,7 +93,6 @@ class application {
                     ImGui::End();
                 }
 
-                    
                 window.clear();
                 ImGui::SFML::Render(window);
 
@@ -91,9 +101,25 @@ class application {
                     window.draw(particles[i]);
                 }
 
+                end = std::clock();
+                framerate = (int) (CLOCKS_PER_SEC / double(end - start));
+
                 window.display();
             }
             
+        }
+
+    private:
+    
+        void resetParticles(){
+            PARTICLE_COUNT = DEFAULT_PARTICLE_COUNTER;
+            // PARTICLE_RADIUS = DEFAULT_PARTICLE_RADIUS;
+            // STRENGHT = DEFAULT_STRENGTH;
+            delete[] particles;
+            delete[] acceleration;
+            particles = new sf::CircleShape[PARTICLE_COUNT];
+            acceleration =  new sf::Vector2f[PARTICLE_COUNT];
+            SetParticle(particles, PARTICLE_RADIUS);
         }
 
 };

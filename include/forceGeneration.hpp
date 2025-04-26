@@ -5,8 +5,7 @@
 #include <imgui.h>
 #include <cmath>
 
-#define STRENGHT 30.f
-
+extern float STRENGHT;
 extern int PARTICLE_COUNT;
 
 
