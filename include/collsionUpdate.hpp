@@ -15,7 +15,7 @@ void CollisionUpdate(sf::CircleShape* particles, sf::Vector2f* velocity){
             float dy = particles[j].getPosition().y - particles[i].getPosition().y;
             float distance = sqrt(dx*dx + dy*dy);
             if(distance < 4){
-                particles[i].setPosition({particles[i].getPosition().x - 0.1 * 2.f, particles[i].getPosition().y - 0.1 * 2.f});
+                particles[i].setPosition({particles[i].getPosition().x - 0.1f * 2.f, particles[i].getPosition().y - 0.1f * 2.f});
                 velocity[i] = {0.f, 0.f};
             }
         }

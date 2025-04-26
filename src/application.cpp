@@ -22,7 +22,6 @@ class application {
         sf::Vector2f oldPos;
         sf::CircleShape* particles;
         sf::Vector2f* acceleration;
-        sf::Vector2f* velocity;
 
     public:
 
@@ -34,7 +33,6 @@ class application {
             ImGui::SFML::Shutdown();
             delete[] particles;
             delete[] acceleration;
-            delete[] velocity;
         }
 
         void run(){
@@ -43,15 +41,14 @@ class application {
             sf::View view = window.getDefaultView();
             view.setCenter({640, 360});
             view.setSize({1280, 720});
-            window.setFramerateLimit(60);
+            window.setFramerateLimit(100);
             if (!ImGui::SFML::Init(window))
                 return;
 
             particles = new sf::CircleShape[PARTICLE_COUNT];
             acceleration =  new sf::Vector2f[PARTICLE_COUNT];
-            velocity = new sf::Vector2f[PARTICLE_COUNT];
 
-            SetParticle(particles, DEFAULT_PARTICLE_RADIUS, velocity);
+            SetParticle(particles, DEFAULT_PARTICLE_RADIUS);
 
             sf::Clock clock;
             while (window.isOpen())
@@ -68,8 +65,8 @@ class application {
                 if(!paused){
 
                     updateForces(particles, acceleration);
-                    updatePosition(particles, acceleration, velocity);
-                    CollisionUpdate(particles, velocity);
+                    updatePosition(particles, acceleration);
+                    // CollisionUpdate(particles, velocity);
 
                     ImGui::SFML::Update(window, clock.restart());               
                     ImGui::Begin("ImGui SFML window");

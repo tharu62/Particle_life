@@ -5,7 +5,7 @@
 #include <imgui.h>
 #include <cmath>
 
-#define STRENGHT 0.1f
+#define STRENGHT 30.f
 
 extern int PARTICLE_COUNT;
 
@@ -18,21 +18,19 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration){
         acceleration[i].y = 0;
 
         for(int j=0; j<PARTICLE_COUNT && j != i; ++j){
-            float dx = particles[j].getPosition().x - particles[i].getPosition().x;
-            float dy = particles[j].getPosition().y - particles[i].getPosition().y;
-            float distance = sqrt(dx*dx + dy*dy);
-            if(distance < 20 && distance > 2){
+            sf::Vector2f direction = particles[j].getPosition() - particles[i].getPosition();
+            float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
+            float minimumDistance = particles[i].getRadius() * 5.f;
+            float maximumDistance = particles[i].getRadius() * 20.f;
 
-                acceleration[i].x -= dx * STRENGHT;
-                acceleration[i].y -= dy * STRENGHT;
-            
-            }else{
-
-                if(distance < 100 && distance > 30){
-                    acceleration[i].x += dx * STRENGHT; 
-                    acceleration[i].y += dy * STRENGHT;
-                }
+            if(distance < minimumDistance){
+                acceleration[i] -= (minimumDistance - distance) * (direction/distance) * 10.f;
+            }
+            else if(distance <= maximumDistance && distance >= minimumDistance){
+                acceleration[i] += (distance - minimumDistance) * (direction/distance);
             }
         }
+
+        acceleration[i] *= STRENGHT;
     }
 }

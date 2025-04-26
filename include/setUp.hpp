@@ -7,7 +7,7 @@
 
 extern int PARTICLE_COUNT;
 
-void SetParticle(sf::CircleShape* particle, int radius, sf::Vector2f* velocity){
+void SetParticle(sf::CircleShape* particle, int radius){
 
     std::random_device rd;
     std::mt19937 eng(rd());
@@ -19,10 +19,10 @@ void SetParticle(sf::CircleShape* particle, int radius, sf::Vector2f* velocity){
         float rand_1 = distribution1(eng);
         float rand_2 = distribution2(eng);
 
-        velocity[i] = {0.f, 0.f};
         particle[i].setRadius(radius);
-        particle[i].setFillColor(sf::Color::White);
+        particle[i].setFillColor(sf::Color::Red);
         particle[i].setPosition({rand_1, rand_2});
+        particle[i].setOrigin( {(float) radius,(float) radius});
     
     }
 
