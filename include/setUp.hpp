@@ -5,6 +5,8 @@
 #include <imgui.h>
 #include <random>
 
+#include "colorMatrix.hpp"
+
 extern int PARTICLE_COUNT;
 
 void SetParticle(sf::CircleShape* particle, int radius){
@@ -20,7 +22,8 @@ void SetParticle(sf::CircleShape* particle, int radius){
         float rand_2 = distribution2(eng);
 
         particle[i].setRadius(radius);
-        particle[i].setFillColor(sf::Color::Red);
+        // particle[i].setFillColor(sf::Color::Red);
+        particle[i].setFillColor(intToColor(rand()%9));
         particle[i].setPosition({rand_1, rand_2});
         particle[i].setOrigin( {(float) radius,(float) radius});
     

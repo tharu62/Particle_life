@@ -11,6 +11,7 @@
 #include "positionUpdate.hpp"
 #include "collsionUpdate.hpp"
 #include "ImGuiManager.hpp"
+#include "colorMatrix.hpp"
 
 #define DEFAULT_PARTICLE_COUNTER 1000
 #define DEFAULT_PARTICLE_RADIUS 3
@@ -56,6 +57,16 @@ class application {
 
             particles = new sf::CircleShape[PARTICLE_COUNT];
             acceleration =  new sf::Vector2f[PARTICLE_COUNT];
+            float colorMatrix[9][9];
+            
+            init_colorMatrix(colorMatrix);
+            std::cout << "Color matrix initialized!" << std::endl;
+            for(int i=0; i<9; ++i){
+                for(int j=0; j<9; ++j){
+                    std::cout << colorMatrix[i][j] << " ";
+                }
+                std::cout << std::endl;
+            }
 
             SetParticle(particles, PARTICLE_RADIUS);
 
@@ -76,10 +87,11 @@ class application {
                 
                 if(!paused){
 
-                    updateForces(particles, acceleration);
+                    updateForces(particles, acceleration, colorMatrix);
                     updatePosition(particles, acceleration);
                     // CollisionUpdate(particles, velocity);
 
+                    ImGui::SFML::Update(window, clock.restart());   
                     manageImGui(window, clock, opened, particles, framerate, PARTICLE_COUNT, PARTICLE_RADIUS, STRENGHT, resetted);
                     if(resetted){
                         resetted = false;

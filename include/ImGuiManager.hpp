@@ -8,8 +8,7 @@
 #include "setUp.hpp"
 
 
-void manageImGui(sf::RenderWindow &window, sf::Clock &clock, bool &opened, sf::CircleShape* particles, int framerate, int &PARTICLE_COUNT, int &PARTICLE_RADIUS, float &STRENGHT, bool &resetted){
-    ImGui::SFML::Update(window, clock.restart());               
+void manageImGui(sf::RenderWindow &window, sf::Clock &clock, bool &opened, sf::CircleShape* particles, int framerate, int &PARTICLE_COUNT, int &PARTICLE_RADIUS, float &STRENGHT, bool &resetted){              
     if(ImGui::Begin("ImGui SFML window", &opened, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize)){
         
         ImGui::Text("FPS: %d", framerate);
