@@ -12,6 +12,7 @@
 #include "collsionUpdate.hpp"
 #include "ImGuiManager.hpp"
 #include "colorMatrix.hpp"
+#include "gridSort.hpp"
 
 #define DEFAULT_PARTICLE_COUNTER 1000
 #define DEFAULT_PARTICLE_RADIUS 3
@@ -31,6 +32,7 @@ class application {
         sf::Vector2f oldPos;
         sf::CircleShape* particles;
         sf::Vector2f* acceleration;
+        std::vector<Node> grid;
 
     public:
 
@@ -60,15 +62,16 @@ class application {
             float colorMatrix[9][9];
             
             init_colorMatrix(colorMatrix);
-            std::cout << "Color matrix initialized!" << std::endl;
-            for(int i=0; i<9; ++i){
-                for(int j=0; j<9; ++j){
-                    std::cout << colorMatrix[i][j] << " ";
-                }
-                std::cout << std::endl;
-            }
+            // std::cout << "Color matrix initialized!" << std::endl;
+            // for(int i=0; i<9; ++i){
+            //     for(int j=0; j<9; ++j){
+            //         std::cout << colorMatrix[i][j] << " ";
+            //     }
+            //     std::cout << std::endl;
+            // }
 
             SetParticle(particles, PARTICLE_RADIUS);
+            initGrid(grid, 3000, 3000, PARTICLE_RADIUS);    
 
             clock_t start = 0;
             clock_t end = 0;
@@ -86,8 +89,11 @@ class application {
                 }
                 
                 if(!paused){
-
-                    updateForces(particles, acceleration, colorMatrix);
+                    
+                    cleanGrid(grid);
+                    insertGrid(particles, acceleration, grid, PARTICLE_COUNT, 20*PARTICLE_RADIUS);
+                    // updateForces(particles, acceleration, colorMatrix);
+                    updateForces(particles, acceleration, colorMatrix, grid);
                     updatePosition(particles, acceleration);
                     // CollisionUpdate(particles, velocity);
 
