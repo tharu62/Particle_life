@@ -12,43 +12,49 @@ struct Node{
     std::vector<int> particles;
 };
 
-void initGrid(std::vector<Node> &grid, int Width, int Height, int PARTICLE_RADIUS){
-
+void initGrid(std::vector<Node> &grid, int width, int height, float gridSize)
+{
     for(int i=0; i<grid.size(); ++i){
         grid[i].particles.clear();
     }
     grid.clear();
     
-    float gridSize = 20*PARTICLE_RADIUS;
-    // float gridSize = maximumDistance;
-    float gridWidth = Width / gridSize;
-    float gridHeight = Height / gridSize;
+    float gridWidth = width / gridSize;
+    float gridHeight = height / gridSize;
 
     for(int i=0; i<gridWidth; ++i){
-        grid.push_back(Node());
         for(int j=0; j<gridHeight; ++j){
-            grid[i].center = {i*gridSize + (gridSize/2), j*gridSize + (gridSize/2)};
+            grid.push_back(Node());
+            grid.back().center = {i*gridSize + (gridSize/2), j*gridSize + (gridSize/2)};
         }
     }
 }
 
-void cleanGrid(std::vector<Node> &grid){
+void cleanGrid(std::vector<Node> &grid)
+{
     for(int i=0; i<grid.size(); ++i){
         grid[i].particles.clear();
     }
 }
 
+int findNodeFromGrid(std::vector<Node> &grid, sf::Vector2f position, int gridSize)
+{
+    for(int i=0; i<grid.size(); ++i){
+        if(position.x < (grid[i].center.x + gridSize/2) && position.x >= (grid[i].center.x - gridSize/2) && position.y < (grid[i].center.y + gridSize/2) && position.y >= (grid[i].center.y - gridSize/2)){
+            return i;
+        }
+    }
+    return -1;
+}
 
-void insertGrid(sf::CircleShape* particles, sf::Vector2f* acceleration, std::vector<Node> &grid, int PARTICLE_COUNT, float gridSize){
 
-    for(int i=0; i< PARTICLE_COUNT; ++i){
+void insertGrid(sf::CircleShape* particles, sf::Vector2f* acceleration, std::vector<Node> &grid, int PARTICLE_COUNT, int gridSize)
+{
+    for(int i=0; i<PARTICLE_COUNT; ++i){
 
-        for(int j=0; j<grid.size(); ++j){
-
-            if(particles[i].getPosition().x < (grid[j].center.x + gridSize/2) && particles[i].getPosition().x > (grid[j].center.x - gridSize/2) && particles[i].getPosition().y < (grid[j].center.y + gridSize/2) && particles[i].getPosition().y > (grid[j].center.y - gridSize/2)){
-                grid[j].particles.push_back(i);
-                continue;
-            }
+        int j = findNodeFromGrid(grid, particles[i].getPosition(), gridSize); 
+        if(j != -1){
+            grid[j].particles.push_back(i);
         }
     }
 

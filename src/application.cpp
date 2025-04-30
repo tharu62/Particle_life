@@ -17,10 +17,13 @@
 #define DEFAULT_PARTICLE_COUNTER 1000
 #define DEFAULT_PARTICLE_RADIUS 3
 #define DEFAULT_STRENGTH 30.f
+#define DEFAULT_REPULSION_FACTOR 20.f
 
 int PARTICLE_COUNT = DEFAULT_PARTICLE_COUNTER;
 int PARTICLE_RADIUS = DEFAULT_PARTICLE_RADIUS;
 float STRENGHT = DEFAULT_STRENGTH;
+float REPULSION_FACTOR = DEFAULT_REPULSION_FACTOR;
+int GRID_SIZE = DEFAULT_PARTICLE_RADIUS * 60;
 
 class application {
 
@@ -47,6 +50,17 @@ class application {
             delete[] acceleration;
         }
 
+        void drawGridBox(sf::RenderWindow &window, sf::Vector2f center, float size){
+            sf::RectangleShape box;
+            box.setSize({size, size});
+            box.setPosition(center);
+            box.setOrigin({size/2, size/2});
+            box.setOutlineColor(sf::Color::Green);
+            box.setOutlineThickness(1.f);
+            box.setFillColor(sf::Color::Transparent);
+            window.draw(box);
+        }
+
         void run(){
 
             auto window = sf::RenderWindow(sf::VideoMode({1280u, 720u}), "Particle Life Project");
@@ -54,6 +68,7 @@ class application {
             view.setCenter({640, 360});
             view.setSize({1280, 720});
             // window.setFramerateLimit(100);
+            window.setVerticalSyncEnabled(true);
             if (!ImGui::SFML::Init(window))
                 return;
 
@@ -71,7 +86,7 @@ class application {
             // }
 
             SetParticle(particles, PARTICLE_RADIUS);
-            initGrid(grid, 3000, 3000, PARTICLE_RADIUS);    
+            initGrid(grid, 3000, 3000, GRID_SIZE);    
 
             clock_t start = 0;
             clock_t end = 0;
@@ -91,14 +106,14 @@ class application {
                 if(!paused){
                     
                     cleanGrid(grid);
-                    insertGrid(particles, acceleration, grid, PARTICLE_COUNT, 20*PARTICLE_RADIUS);
-                    // updateForces(particles, acceleration, colorMatrix);
+                    insertGrid(particles, acceleration, grid, PARTICLE_COUNT, GRID_SIZE);
                     updateForces(particles, acceleration, colorMatrix, grid);
                     updatePosition(particles, acceleration);
+                    // CollisionUpdate(particles, grid, 100*PARTICLE_RADIUS);
                     // CollisionUpdate(particles, velocity);
 
                     ImGui::SFML::Update(window, clock.restart());   
-                    manageImGui(window, clock, opened, particles, framerate, PARTICLE_COUNT, PARTICLE_RADIUS, STRENGHT, resetted);
+                    manageImGui(window, clock, opened, particles, framerate, PARTICLE_COUNT, PARTICLE_RADIUS, STRENGHT, REPULSION_FACTOR, resetted);
                     if(resetted){
                         resetted = false;
                         resetParticles();
@@ -112,13 +127,19 @@ class application {
                 }
 
                 window.clear();
-                ImGui::SFML::Render(window);
-
+                
                 window.setView(view);
                 for(int i=0; i<PARTICLE_COUNT; ++i){
                     window.draw(particles[i]);
                 }
-
+                
+                // // For testing grid
+                // for(int i=0; i<grid.size(); ++i){
+                //     drawGridBox(window, grid[i].center, 100*PARTICLE_RADIUS);
+                // }
+                
+                ImGui::SFML::Render(window);
+                    
                 end = std::clock();
                 framerate = (int) (CLOCKS_PER_SEC / double(end - start));
 
