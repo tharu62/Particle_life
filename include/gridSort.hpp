@@ -19,13 +19,14 @@ void initGrid(std::vector<Node> &grid, int width, int height, float gridSize)
     }
     grid.clear();
     
+    
     float gridWidth = width / gridSize;
     float gridHeight = height / gridSize;
 
-    for(int i=0; i<gridWidth; ++i){
+    for(int i=0; i<gridWidth-1; ++i){
         for(int j=0; j<gridHeight; ++j){
             grid.push_back(Node());
-            grid.back().center = {i*gridSize + (gridSize/2), j*gridSize + (gridSize/2)};
+            grid.back().center = {i*gridSize + gridSize/2 - width/4, j*gridSize + gridSize/2 - height/4};
         }
     }
 }
@@ -36,6 +37,7 @@ void cleanGrid(std::vector<Node> &grid)
         grid[i].particles.clear();
     }
 }
+
 
 int findNodeFromGrid(std::vector<Node> &grid, sf::Vector2f position, int gridSize)
 {
@@ -52,7 +54,13 @@ void insertGrid(sf::CircleShape* particles, sf::Vector2f* acceleration, std::vec
 {
     for(int i=0; i<PARTICLE_COUNT; ++i){
 
-        int j = findNodeFromGrid(grid, particles[i].getPosition(), gridSize); 
+        // for(int j=0; j<grid.size(); ++j){
+        //     if(particles[i].getPosition().x < (grid[j].center.x + gridSize/2) && particles[i].getPosition().x >= (grid[j].center.x - gridSize/2) && particles[i].getPosition().y < (grid[j].center.y + gridSize/2) && particles[i].getPosition().y >= (grid[j].center.y - gridSize/2)){
+        //         grid[j].particles.push_back(i);
+        //         continue;
+        //     }
+        // } 
+        int j = findNodeFromGrid(grid, particles[i].getPosition(), gridSize);
         if(j != -1){
             grid[j].particles.push_back(i);
         }

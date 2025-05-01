@@ -14,8 +14,13 @@ void init_colorMatrix(float colorMatrix[][9]){
         }
     }
 
-    colorMatrix[0][1] = 1.f;
-    colorMatrix[1][0] = -1.f;
+    colorMatrix[1][1] = 0.f;
+    colorMatrix[0][1] = -10.f;
+    colorMatrix[1][0] = 1.f;
+    colorMatrix[0][2] = -1.f;
+    colorMatrix[2][0] = 1.f;
+    colorMatrix[1][2] = -1.f;
+    colorMatrix[2][1] = -1.f;
 }
 
 int colorToInt(sf::Color color){

@@ -14,16 +14,16 @@
 #include "colorMatrix.hpp"
 #include "gridSort.hpp"
 
-#define DEFAULT_PARTICLE_COUNTER 1000
-#define DEFAULT_PARTICLE_RADIUS 3
 #define DEFAULT_STRENGTH 30.f
+#define DEFAULT_PARTICLE_RADIUS 3
 #define DEFAULT_REPULSION_FACTOR 20.f
+#define DEFAULT_PARTICLE_COUNTER 1000
 
+int GRID_SIZE = DEFAULT_PARTICLE_RADIUS * 60;
 int PARTICLE_COUNT = DEFAULT_PARTICLE_COUNTER;
 int PARTICLE_RADIUS = DEFAULT_PARTICLE_RADIUS;
 float STRENGHT = DEFAULT_STRENGTH;
 float REPULSION_FACTOR = DEFAULT_REPULSION_FACTOR;
-int GRID_SIZE = DEFAULT_PARTICLE_RADIUS * 60;
 
 class application {
 
@@ -34,6 +34,7 @@ class application {
         bool resetted = false;
         sf::Vector2f oldPos;
         sf::CircleShape* particles;
+        sf::Vector2f* velocity;
         sf::Vector2f* acceleration;
         std::vector<Node> grid;
 
@@ -50,6 +51,7 @@ class application {
             delete[] acceleration;
         }
 
+        
         void drawGridBox(sf::RenderWindow &window, sf::Vector2f center, float size){
             sf::RectangleShape box;
             box.setSize({size, size});
@@ -60,6 +62,7 @@ class application {
             box.setFillColor(sf::Color::Transparent);
             window.draw(box);
         }
+
 
         void run(){
 
@@ -73,6 +76,7 @@ class application {
                 return;
 
             particles = new sf::CircleShape[PARTICLE_COUNT];
+            velocity = new sf::Vector2f[PARTICLE_COUNT];
             acceleration =  new sf::Vector2f[PARTICLE_COUNT];
             float colorMatrix[9][9];
             
@@ -86,7 +90,7 @@ class application {
             // }
 
             SetParticle(particles, PARTICLE_RADIUS);
-            initGrid(grid, 3000, 3000, GRID_SIZE);    
+            initGrid(grid, GRID_SIZE*20, GRID_SIZE*20, GRID_SIZE);    
 
             clock_t start = 0;
             clock_t end = 0;
@@ -103,12 +107,13 @@ class application {
                     
                 }
                 
-                if(!paused){
+                [[likely]] if(!paused){
                     
                     cleanGrid(grid);
                     insertGrid(particles, acceleration, grid, PARTICLE_COUNT, GRID_SIZE);
+                    // updateForces(particles, acceleration, colorMatrix);
                     updateForces(particles, acceleration, colorMatrix, grid);
-                    updatePosition(particles, acceleration);
+                    updatePosition(particles, acceleration, velocity);
                     // CollisionUpdate(particles, grid, 100*PARTICLE_RADIUS);
                     // CollisionUpdate(particles, velocity);
 
@@ -133,10 +138,22 @@ class application {
                     window.draw(particles[i]);
                 }
                 
-                // // For testing grid
-                // for(int i=0; i<grid.size(); ++i){
-                //     drawGridBox(window, grid[i].center, 100*PARTICLE_RADIUS);
-                // }
+                // For testing grid
+                    // sf::CircleShape center;
+                    // center.setRadius(5.f);
+                    // center.setFillColor(sf::Color::White);
+                    // center.setPosition({0.f, 0.f});
+                    // center.setOrigin({5.f, 5.f});
+                    // window.draw(center);
+                    // sf::CircleShape center2;
+                    // center2.setRadius(5.f);
+                    // center2.setFillColor(sf::Color::White);
+                    // center2.setPosition({640.f, 360.f});
+                    // center2.setOrigin({5.f, 5.f});
+                    // window.draw(center2);
+                    // for(int i=0; i<grid.size(); ++i){
+                    //     drawGridBox(window, grid[i].center, GRID_SIZE);
+                    // }
                 
                 ImGui::SFML::Render(window);
                     

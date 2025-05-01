@@ -7,12 +7,13 @@
 extern int PARTICLE_COUNT;
 float dt = 0.01f; // Assuming a fixed time step for simplicity
 
-void updatePosition(sf::CircleShape* particles, sf::Vector2f* acceleration){
+void updatePosition(sf::CircleShape* particles, sf::Vector2f* acceleration, sf::Vector2f* velocity){
 
 
     for(int i=0; i<PARTICLE_COUNT; ++i){
-
-        particles[i].setPosition(particles[i].getPosition() + acceleration[i] * dt * dt);
+        velocity[i] += acceleration[i] * dt;
+        velocity[i] *= 0.9f; // Damping factor to reduce velocity over time 
+        particles[i].setPosition(particles[i].getPosition() + velocity[i] * dt);
     }
 
 }
