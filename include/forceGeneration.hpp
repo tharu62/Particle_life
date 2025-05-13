@@ -17,29 +17,34 @@ extern int GRID_SIZE;
 
 float minimumDistance = PARTICLE_RADIUS * 3.f;
 float maximumDistance = PARTICLE_RADIUS * 20.f;
+float minimumDistanceSquared = minimumDistance * minimumDistance;
+float maximumDistanceSquared = maximumDistance * maximumDistance;
 
-void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float colorMatrix[][9])
+void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float (&colorMatrix)[9][9])
 {
+    sf::Vector2f direction;
+    float distance;
+
     for(int i=0; i<PARTICLE_COUNT; ++i){
 
         acceleration[i] = {0,0};
 
-        // float minimumDistance = particles[i].getRadius() * 5.f;
-        // float maximumDistance = particles[i].getRadius() * 20.f;
-
         for(int j=0; j<PARTICLE_COUNT && j != i; ++j){
 
-            sf::Vector2f direction = particles[j].getPosition() - particles[i].getPosition();
-            float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
+            direction = particles[j].getPosition() - particles[i].getPosition();
+            distance = direction.x * direction.x + direction.y * direction.y;
             
-            if(distance < minimumDistance && distance > 0){
-                // acceleration[i] -= (minimumDistance - distance) * (direction/distance) * 20.f;
-                acceleration[i] -= (minimumDistance - distance) * (direction/distance) * 20.f * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[j].getFillColor())];
-                // acceleration[i] -= (1/(distance/minimumDistance)) * (direction/distance);
-            }
-            else if(distance <= maximumDistance && distance >= minimumDistance){
-                acceleration[i] += (distance - minimumDistance) * (direction/distance) * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[j].getFillColor())];
-                // acceleration[i] += (distance - minimumDistance) * (direction/distance);
+            if(distance < maximumDistanceSquared){
+                
+                if(distance < minimumDistanceSquared && distance > 0){
+                    distance = sqrt(distance);
+                    acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION_FACTOR;
+                }
+                else if(distance <= maximumDistanceSquared && distance >= minimumDistanceSquared){
+                    distance = sqrt(distance);
+                    acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[j].getFillColor())];
+                }
+
             }
         }
 
@@ -77,14 +82,14 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float 
         }
 
         for(int m=0; m<8; ++m){
-            if(m==0)     {l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{maximumDistance, 0.f},               GRID_SIZE);}
-            else if(m==1){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{0.f, maximumDistance},               GRID_SIZE);}
-            else if(m==2){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{maximumDistance, maximumDistance},   GRID_SIZE);}
-            else if(m==3){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{-maximumDistance, 0.f},              GRID_SIZE);}
-            else if(m==4){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{0.f, -maximumDistance},              GRID_SIZE);}
-            else if(m==5){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{-maximumDistance, -maximumDistance}, GRID_SIZE);}
-            else if(m==6){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{maximumDistance, -maximumDistance},  GRID_SIZE);}
-            else if(m==7){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{-maximumDistance, maximumDistance},  GRID_SIZE);}
+            if(m==0)     {l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float) GRID_SIZE,               0.f},  GRID_SIZE);}
+            else if(m==1){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{              0.f, (float) GRID_SIZE},  GRID_SIZE);}
+            else if(m==2){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float) GRID_SIZE, (float) GRID_SIZE},  GRID_SIZE);}
+            else if(m==3){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float)-GRID_SIZE,               0.f},  GRID_SIZE);}
+            else if(m==4){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{              0.f, (float)-GRID_SIZE},  GRID_SIZE);}
+            else if(m==5){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float)-GRID_SIZE, (float)-GRID_SIZE},  GRID_SIZE);}
+            else if(m==6){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float) GRID_SIZE, (float)-GRID_SIZE},  GRID_SIZE);}
+            else if(m==7){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float)-GRID_SIZE, (float) GRID_SIZE},  GRID_SIZE);}
             
             if(l != -1 && l != j){
                 for(int k=0; k<grid[l].particles.size() && grid[l].particles[k]!=i; ++k){
