@@ -109,10 +109,10 @@ class application {
                 
                 [[likely]] if(!paused){
                     
-                    // cleanGrid(grid);
-                    // insertGrid(particles, acceleration, grid, PARTICLE_COUNT, GRID_SIZE);
-                    updateForces(particles, acceleration, colorMatrix);
-                    // updateForces(particles, acceleration, colorMatrix, grid);
+                    cleanGrid(grid);
+                    insertGrid(particles, acceleration, grid, PARTICLE_COUNT, GRID_SIZE);
+                    //updateForces(particles, acceleration, colorMatrix);
+                    updateForces(particles, acceleration, colorMatrix, grid);
                     updatePosition(particles, acceleration, velocity);
                     // CollisionUpdate(particles, grid, 100*PARTICLE_RADIUS);
                     // CollisionUpdate(particles, velocity);
