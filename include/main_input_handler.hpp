@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 
+/**
+ * @brief Handles command line input for the particle simulation application.
+ */
 void handle(int size, char* input[])
 {
     

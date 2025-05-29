@@ -7,6 +7,12 @@
 
 extern int PARTICLE_COUNT;
 
+/**
+ * @brief Updates the position of particles based on their velocity and applies collision resolution.
+ * 
+ * @param particles Array of particles to update.
+ * @param velocity Array of velocities for each particle.
+ */
 void CollisionUpdate(sf::CircleShape* particles, sf::Vector2f* velocity)
 {
     for(int i=0; i<PARTICLE_COUNT; ++i){
@@ -23,6 +29,13 @@ void CollisionUpdate(sf::CircleShape* particles, sf::Vector2f* velocity)
 
 }
 
+/**
+ * @brief Updates the position of particles based on their velocity and applies collision resolution using a grid.
+ * 
+ * @param particles Array of particles to update.
+ * @param grid Vector of nodes representing the grid.
+ * @param maximumDistance Maximum distance for collision detection.
+ */
 void CollisionUpdate(sf::CircleShape* particles, std::vector<Node> &grid, float maximumDistance)
 {
     int l; 

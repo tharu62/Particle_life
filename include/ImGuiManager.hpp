@@ -7,7 +7,9 @@
 
 #include "setUp.hpp"
 
-
+/**
+ * @brief Manages the ImGui window for particle simulation settings.
+ */
 void manageImGui(sf::RenderWindow &window, sf::Clock &clock, bool &opened, sf::CircleShape* particles, int framerate, int &PARTICLE_COUNT, int &PARTICLE_RADIUS, float &STRENGHT, float &REPULSION_FACTOR, bool &resetted){              
     if(ImGui::Begin("ImGui SFML window", &opened, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize)){
         

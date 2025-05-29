@@ -2,6 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 
+/**
+ * @brief Initializes the color matrix used for color manipulation.
+ */
 void init_colorMatrix(float colorMatrix[][9]){
     for(int i=0; i<9; ++i){
         for(int j=0; j<9; ++j){
@@ -23,6 +26,12 @@ void init_colorMatrix(float colorMatrix[][9]){
     colorMatrix[2][1] = -1.f;
 }
 
+/**
+ * @brief Converts a SFML color to an integer representation.
+ * 
+ * @param color The SFML color to convert.
+ * @return An integer representing the color.
+ */
 int colorToInt(sf::Color color){
     switch(color.toInteger()){
         case sf::Color::Red.toInteger():
@@ -58,6 +67,12 @@ int colorToInt(sf::Color color){
     }
 }
 
+/**
+ * @brief Converts an integer representation to a SFML color.
+ * 
+ * @param color The integer representing the color.
+ * @return The corresponding SFML color.
+ */
 sf::Color intToColor(int color){
     switch(color){
         case 0:

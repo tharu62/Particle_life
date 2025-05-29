@@ -3,7 +3,9 @@
 #include <iostream>
 #include "SFML/Graphics.hpp"
 
-
+/**
+ * @brief Handles SFML events for the window.
+ */
 void EventHandler(std::optional<sf::Event> event, sf::View &view, sf::RenderWindow &window, sf::Vector2f &oldPos, bool &moving, bool &paused){
 
     if(const auto* PkeyPressed = event->getIf<sf::Event::KeyPressed>()){

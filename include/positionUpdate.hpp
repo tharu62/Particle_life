@@ -7,6 +7,13 @@
 extern int PARTICLE_COUNT;
 float dt = 0.01f; // Assuming a fixed time step for simplicity
 
+/**
+ * @brief Updates the position of particles based on their velocity and acceleration.
+ * 
+ * @param particles Array of particles to update.
+ * @param acceleration Array of accelerations for each particle.
+ * @param velocity Array of velocities for each particle.
+ */
 void updatePosition(sf::CircleShape* particles, sf::Vector2f* acceleration, sf::Vector2f* velocity){
 
 

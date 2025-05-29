@@ -9,6 +9,12 @@
 
 extern int PARTICLE_COUNT;
 
+/**
+ * @brief Sets up the particles with random positions and colors.
+ * 
+ * @param particle Pointer to an array of CircleShape particles.
+ * @param radius The radius of each particle.
+ */
 void SetParticle(sf::CircleShape* particle, int radius){
 
     std::random_device rd;

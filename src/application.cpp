@@ -48,6 +48,7 @@ class application {
         void clean(){
             ImGui::SFML::Shutdown();
             delete[] particles;
+            delete[] velocity;
             delete[] acceleration;
         }
 
@@ -81,6 +82,8 @@ class application {
             float colorMatrix[9][9];
             
             init_colorMatrix(colorMatrix);
+
+            /***************** For testing color matrix **********************/
             // std::cout << "Color matrix initialized!" << std::endl;
             // for(int i=0; i<9; ++i){
             //     for(int j=0; j<9; ++j){
@@ -88,6 +91,7 @@ class application {
             //     }
             //     std::cout << std::endl;
             // }
+            /*****************************************************************/
 
             SetParticle(particles, PARTICLE_RADIUS);
             initGrid(grid, GRID_SIZE*20, GRID_SIZE*20, GRID_SIZE);    
@@ -111,9 +115,12 @@ class application {
                     
                     cleanGrid(grid);
                     insertGrid(particles, acceleration, grid, PARTICLE_COUNT, GRID_SIZE);
-                    //updateForces(particles, acceleration, colorMatrix);
                     updateForces(particles, acceleration, colorMatrix, grid);
+
+                    //updateForces(particles, acceleration, colorMatrix);
+
                     updatePosition(particles, acceleration, velocity);
+
                     // CollisionUpdate(particles, grid, 100*PARTICLE_RADIUS);
                     // CollisionUpdate(particles, velocity);
 
@@ -138,22 +145,23 @@ class application {
                     window.draw(particles[i]);
                 }
                 
-                // For testing grid
-                    // sf::CircleShape center;
-                    // center.setRadius(5.f);
-                    // center.setFillColor(sf::Color::White);
-                    // center.setPosition({0.f, 0.f});
-                    // center.setOrigin({5.f, 5.f});
-                    // window.draw(center);
-                    // sf::CircleShape center2;
-                    // center2.setRadius(5.f);
-                    // center2.setFillColor(sf::Color::White);
-                    // center2.setPosition({640.f, 360.f});
-                    // center2.setOrigin({5.f, 5.f});
-                    // window.draw(center2);
-                    // for(int i=0; i<grid.size(); ++i){
-                    //     drawGridBox(window, grid[i].center, GRID_SIZE);
-                    // }
+                /*********************** For testing grid **********************/
+                // sf::CircleShape center;
+                // center.setRadius(5.f);
+                // center.setFillColor(sf::Color::White);
+                // center.setPosition({0.f, 0.f});
+                // center.setOrigin({5.f, 5.f});
+                // window.draw(center);
+                // sf::CircleShape center2;
+                // center2.setRadius(5.f);
+                // center2.setFillColor(sf::Color::White);
+                // center2.setPosition({640.f, 360.f});
+                // center2.setOrigin({5.f, 5.f});
+                // window.draw(center2);
+                // for(int i=0; i<grid.size(); ++i){
+                    // drawGridBox(window, grid[i].center, GRID_SIZE);
+                // }
+                /***************************************************************/
                 
                 ImGui::SFML::Render(window);
                     
@@ -168,7 +176,7 @@ class application {
     private:
     
         void resetParticles(){
-            PARTICLE_COUNT = DEFAULT_PARTICLE_COUNTER;
+            // PARTICLE_COUNT = DEFAULT_PARTICLE_COUNTER;
             // PARTICLE_RADIUS = DEFAULT_PARTICLE_RADIUS;
             // STRENGHT = DEFAULT_STRENGTH;
             delete[] particles;

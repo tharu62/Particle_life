@@ -20,6 +20,12 @@ float maximumDistance = PARTICLE_RADIUS * 20.f;
 float minimumDistanceSquared = minimumDistance * minimumDistance;
 float maximumDistanceSquared = maximumDistance * maximumDistance;
 
+/**
+ * @brief Updates the acceleration of particles based on their acceleration, position and color.
+ * @param particles Array of particles.
+ * @param acceleration Array of accelerations for each particle.
+ * @param colorMatrix Color matrix used for color manipulation.
+ */
 void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float (&colorMatrix)[9][9])
 {
     sf::Vector2f direction;
@@ -52,6 +58,13 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float 
     }
 }
 
+/**
+ * @brief Updates the acceleration of particles based on their acceleration, position, color and grid.
+ * @param particles Array of particles.
+ * @param acceleration Array of accelerations for each particle.
+ * @param colorMatrix Color matrix used for color manipulation.
+ * @param grid Grid containing nodes with particles.
+ */
 void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float colorMatrix[][9], std::vector<Node> &grid)
 {
     int l; 
