@@ -23,3 +23,12 @@ To compile on Linux. from the Particle_life directory use this commands form ter
  cmake -B build
  cmake --build build
 ```
+
+```bash 
+  _   _                        __ ___                     _      
+ | | | |                      / /|__ \                   | |     
+ | |_| |__   __ _ _ __ _   _ / /_   ) |      ___ ___   __| | ___ 
+ | __| '_ \ / _` | '__| | | | '_ \ / /      / __/ _ \ / _` |/ _ \
+ | |_| | | | (_| | |  | |_| | (_) / /_     | (_| (_) | (_| |  __/
+  \__|_| |_|\__,_|_|   \__,_|\___/____|     \___\___/ \__,_|\___|
+```     
