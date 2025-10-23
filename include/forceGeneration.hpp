@@ -6,16 +6,20 @@
 #include <cmath>
 
 #include "colorMatrix.hpp"
-#include "gridSort.hpp"
+#include "grid.hpp"
+
+#define color_row(x) colorToInt(particles[x].getFillColor())
+#define color_col(y,z) colorToInt(particles[grid[y].particles[z]].getFillColor())
 
 
 extern int PARTICLE_COUNT;
 extern int PARTICLE_RADIUS;
 extern float STRENGHT;
 extern float REPULSION_FACTOR;
-extern int GRID_SIZE;
+extern int GRID_CELL_SIZE;
 
-float minimumDistance = PARTICLE_RADIUS * 3.f;
+// float minimumDistance = PARTICLE_RADIUS * 3.f;
+float minimumDistance = PARTICLE_RADIUS * 5.f;
 float maximumDistance = PARTICLE_RADIUS * 20.f;
 float minimumDistanceSquared = minimumDistance * minimumDistance;
 float maximumDistanceSquared = maximumDistance * maximumDistance;
@@ -48,7 +52,7 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float 
                 }
                 else if(distance <= maximumDistanceSquared && distance >= minimumDistanceSquared){
                     distance = sqrt(distance);
-                    acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[j].getFillColor())];
+                    acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[color_row(i)][color_row(j)];
                 }
 
             }
@@ -74,7 +78,7 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float 
 
         acceleration[i] = {0,0};
 
-        j = findNodeFromGrid(grid, particles[i].getPosition(), GRID_SIZE);
+        j = findNodeFromGrid(grid, particles[i].getPosition(), GRID_CELL_SIZE);
         if(j != -1){
             for(int k=0; k<grid[j].particles.size() && grid[j].particles[k]!=i; ++k){
     
@@ -83,49 +87,42 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float 
                 
                 if(distance < minimumDistance && distance > 0){ 
                     acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION_FACTOR;
-                    // acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION_FACTOR * (float)abs(colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[grid[j].particles[k]].getFillColor())]);
-                    // acceleration[i] -= distance * (direction/distance) * REPULSION_FACTOR * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[grid[j].particles[k]].getFillColor())];
                 }
                 else if(distance <= maximumDistance && distance >= minimumDistance){
-                    // acceleration[i] += (distance - minimumDistance) * (direction/distance) * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[grid[j].particles[k]].getFillColor())];
-                    acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[grid[j].particles[k]].getFillColor())];
+                    acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[color_row(i)][color_col(j,k)];
                 }
     
             }
-        }
-
-        for(int m=0; m<8; ++m){
-            if(m==0)     {l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float) GRID_SIZE,               0.f},  GRID_SIZE);}
-            else if(m==1){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{              0.f, (float) GRID_SIZE},  GRID_SIZE);}
-            else if(m==2){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float) GRID_SIZE, (float) GRID_SIZE},  GRID_SIZE);}
-            else if(m==3){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float)-GRID_SIZE,               0.f},  GRID_SIZE);}
-            else if(m==4){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{              0.f, (float)-GRID_SIZE},  GRID_SIZE);}
-            else if(m==5){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float)-GRID_SIZE, (float)-GRID_SIZE},  GRID_SIZE);}
-            else if(m==6){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float) GRID_SIZE, (float)-GRID_SIZE},  GRID_SIZE);}
-            else if(m==7){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float)-GRID_SIZE, (float) GRID_SIZE},  GRID_SIZE);}
             
-            if(l != -1 && l != j){
-                for(int k=0; k<grid[l].particles.size() && grid[l].particles[k]!=i; ++k){
-        
-                    sf::Vector2f direction = particles[grid[l].particles[k]].getPosition() - particles[i].getPosition();
-                    float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
-                    
-                    if(distance < minimumDistance && distance > 0){
-                        acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION_FACTOR;
-                        // acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION_FACTOR * (float)abs(colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[grid[l].particles[k]].getFillColor())]);
-                        // acceleration[i] -= distance * (direction/distance) * REPULSION_FACTOR * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[grid[l].particles[k]].getFillColor())];
+            for(int m=0; m<8; ++m){
+                if(m==0)     {l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float) GRID_CELL_SIZE,                    0.f},  GRID_CELL_SIZE);}
+                else if(m==1){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{                   0.f, (float) GRID_CELL_SIZE},  GRID_CELL_SIZE);}
+                else if(m==2){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float) GRID_CELL_SIZE, (float) GRID_CELL_SIZE},  GRID_CELL_SIZE);}
+                else if(m==3){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float)-GRID_CELL_SIZE,                    0.f},  GRID_CELL_SIZE);}
+                else if(m==4){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{                   0.f, (float)-GRID_CELL_SIZE},  GRID_CELL_SIZE);}
+                else if(m==5){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float)-GRID_CELL_SIZE, (float)-GRID_CELL_SIZE},  GRID_CELL_SIZE);}
+                else if(m==6){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float) GRID_CELL_SIZE, (float)-GRID_CELL_SIZE},  GRID_CELL_SIZE);}
+                else if(m==7){l = findNodeFromGrid(grid, particles[i].getPosition() - sf::Vector2f{(float)-GRID_CELL_SIZE, (float) GRID_CELL_SIZE},  GRID_CELL_SIZE);}
+                
+                if(l != -1 && l != j){
+                    for(int k=0; k<grid[l].particles.size() && grid[l].particles[k]!=i; ++k){
+            
+                        sf::Vector2f direction = particles[grid[l].particles[k]].getPosition() - particles[i].getPosition();
+                        float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
+                        
+                        if(distance < minimumDistance && distance > 0){
+                            acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION_FACTOR;
+                        }
+                        else if(distance <= maximumDistance && distance >= minimumDistance){
+                            acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[color_row(i)][color_col(l,k)];
+                        }
+    
                     }
-                    else if(distance <= maximumDistance && distance >= minimumDistance){
-                        // acceleration[i] += (distance - minimumDistance) * (direction/distance) * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[grid[l].particles[k]].getFillColor())];
-                        acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[colorToInt(particles[i].getFillColor())][colorToInt(particles[grid[l].particles[k]].getFillColor())];
-                    }
-
                 }
             }
+            acceleration[i] *= STRENGHT;
         }
-        
 
-        acceleration[i] *= STRENGHT;
     }
 
 }

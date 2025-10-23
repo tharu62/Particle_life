@@ -10,7 +10,7 @@
 extern int PARTICLE_COUNT;
 
 /**
- * @brief Sets up the particles with random positions and colors.
+ * @brief Sets up the particles with random position and color in a rectangle of 1280x720 on screen.
  * 
  * @param particle Pointer to an array of CircleShape particles.
  * @param radius The radius of each particle.
@@ -28,9 +28,16 @@ void SetParticle(sf::CircleShape* particle, int radius){
         float rand_2 = distribution2(eng);
 
         particle[i].setRadius(radius);
-        // particle[i].setFillColor(sf::Color::Red);
-        particle[i].setFillColor(intToColor(rand()%2));
+        particle[i].setFillColor(intToColor(rand()%3));
         particle[i].setPosition({rand_1, rand_2});
+        while(particle[i].getPosition().x <= 0 || particle[i].getPosition().x >= 1280){
+            rand_1 = distribution1(eng);
+            particle[i].setPosition({rand_1, particle[i].getPosition().y});
+        }
+        while(particle[i].getPosition().y <= 0 || particle[i].getPosition().y >= 720){
+            rand_2 = distribution2(eng);
+            particle[i].setPosition({particle[i].getPosition().x, rand_2});
+        }
         particle[i].setOrigin( {(float) radius,(float) radius});
     
     }

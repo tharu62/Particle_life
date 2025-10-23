@@ -7,5 +7,4 @@
 struct Particle {
     sf::Vector2f position;
     sf::Vector2f acceleration;
-
 };
