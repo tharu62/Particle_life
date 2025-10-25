@@ -86,8 +86,9 @@ void cleanGrid(std::vector<Node> &grid)
  */
 int findNodeFromGrid(std::vector<Node> &grid, sf::Vector2f position, int gridSize)
 {
+    gridSize /= 2;
     for(int i=0; i<grid.size(); ++i){
-        if(position.x < (grid[i].center.x + gridSize/2) && position.x >= (grid[i].center.x - gridSize/2) && position.y < (grid[i].center.y + gridSize/2) && position.y >= (grid[i].center.y - gridSize/2)){
+        if(position.x < (grid[i].center.x + gridSize) && position.x >= (grid[i].center.x - gridSize) && position.y < (grid[i].center.y + gridSize) && position.y >= (grid[i].center.y - gridSize)){
             return i;
         }
     }

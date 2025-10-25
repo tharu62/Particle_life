@@ -15,7 +15,7 @@
 extern int PARTICLE_COUNT;
 extern int PARTICLE_RADIUS;
 extern float STRENGHT;
-extern float REPULSION_FACTOR;
+extern float REPULSION;
 extern int GRID_CELL_SIZE;
 
 // float minimumDistance = PARTICLE_RADIUS * 3.f;
@@ -24,13 +24,44 @@ float maximumDistance = PARTICLE_RADIUS * 20.f;
 float minimumDistanceSquared = minimumDistance * minimumDistance;
 float maximumDistanceSquared = maximumDistance * maximumDistance;
 
+float mediumDistance = (minimumDistance + maximumDistance) / 2.f;
+float mediumDistanceSquared = mediumDistance * mediumDistance;
+
+/** 
+ * Force calculation graph for two particles:
+ * 
+ * (Acceleration)
+ *  *
+ * /*\
+ *  *                     #
+ *  *                   #   #        
+ *  *                 #       #                         
+ *  *               #           #             \ 
+ *  0 * * * * * * 1 * * * 2 * * * 3 * * * * * ** (distance)
+ *  *           #                             /
+ *  *         #  
+ *  *       #
+ *  *     #
+ *  *   #
+ *  * #
+ *  #
+ *  *  
+ * 
+ *  1: Repulsion zone (distance < minimumDistance)
+ *  2: Attraction zone (minimumDistance <= distance <= mediumDistance)
+ *  3: Attraction decreasing zone (mediumDistance < distance <= maximumDistance)
+ * 
+ */
+
+
 /**
  * @brief Updates the acceleration of particles based on their acceleration, position and color.
+ * 
  * @param particles Array of particles.
  * @param acceleration Array of accelerations for each particle.
  * @param colorMatrix Color matrix used for color manipulation.
  */
-void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float (&colorMatrix)[9][9])
+void updateForcesOnce(sf::CircleShape* particles, sf::Vector2f* acceleration, float (&colorMatrix)[9][9])
 {
     sf::Vector2f direction;
     float distance;
@@ -48,11 +79,19 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float 
                 
                 if(distance < minimumDistanceSquared && distance > 0){
                     distance = sqrt(distance);
-                    acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION_FACTOR;
+                    acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION;
                 }
-                else if(distance <= maximumDistanceSquared && distance >= minimumDistanceSquared){
+                // else if(distance <= maximumDistanceSquared && distance >= minimumDistanceSquared){
+                //     distance = sqrt(distance);
+                //     acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[color_row(i)][color_row(j)];
+                // }
+                else if(distance <= mediumDistanceSquared && distance >= minimumDistanceSquared){
                     distance = sqrt(distance);
-                    acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[color_row(i)][color_row(j)];
+                    acceleration[i] += (distance-minimumDistance) * (direction/distance) * colorMatrix[color_row(i)][color_row(j)];
+                }
+                else if(distance <= maximumDistanceSquared && distance > mediumDistanceSquared){
+                    distance = sqrt(distance);
+                    acceleration[i] += (-distance+maximumDistance) * (direction/distance) * colorMatrix[color_row(i)][color_row(j)];
                 }
 
             }
@@ -64,6 +103,7 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float 
 
 /**
  * @brief Updates the acceleration of particles based on their acceleration, position, color and grid.
+ * 
  * @param particles Array of particles.
  * @param acceleration Array of accelerations for each particle.
  * @param colorMatrix Color matrix used for color manipulation.
@@ -86,10 +126,16 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float 
                 float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
                 
                 if(distance < minimumDistance && distance > 0){ 
-                    acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION_FACTOR;
+                    acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION;
                 }
-                else if(distance <= maximumDistance && distance >= minimumDistance){
-                    acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[color_row(i)][color_col(j,k)];
+                // else if(distance <= maximumDistance && distance >= minimumDistance){
+                //     acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[color_row(i)][color_col(j,k)];
+                // }
+                else if(distance <= mediumDistance && distance >= minimumDistance){
+                    acceleration[i] += (distance-minimumDistance) * (direction/distance) * colorMatrix[color_row(i)][color_col(j,k)];
+                }
+                else if(distance <= maximumDistance && distance > mediumDistance){
+                    acceleration[i] += (-distance+maximumDistance) * (direction/distance) * colorMatrix[color_row(i)][color_col(j,k)];
                 }
     
             }
@@ -111,10 +157,16 @@ void updateForces(sf::CircleShape* particles, sf::Vector2f* acceleration, float 
                         float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
                         
                         if(distance < minimumDistance && distance > 0){
-                            acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION_FACTOR;
+                            acceleration[i] -= (minimumDistance - distance) * (direction/distance) * REPULSION;
                         }
-                        else if(distance <= maximumDistance && distance >= minimumDistance){
-                            acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[color_row(i)][color_col(l,k)];
+                        // else if(distance <= maximumDistance && distance >= minimumDistance){
+                        //     acceleration[i] += (float)abs(log(distance)) * (direction/distance) * colorMatrix[color_row(i)][color_col(l,k)];
+                        // }
+                        else if(distance <= mediumDistance && distance >= minimumDistance){
+                            acceleration[i] += (distance-minimumDistance) * (direction/distance) * colorMatrix[color_row(i)][color_col(l,k)];
+                        }
+                        else if(distance <= maximumDistance && distance > mediumDistance){
+                            acceleration[i] += (-distance+maximumDistance) * (direction/distance) * colorMatrix[color_row(i)][color_col(l,k)];
                         }
     
                     }

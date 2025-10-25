@@ -26,7 +26,7 @@ void updatePosition(sf::CircleShape* particles, sf::Vector2f* acceleration, sf::
             velocity[i].x = 0.0f;
         }else{
             velocity[i] += acceleration[i] * dt;
-            velocity[i] *= 0.98f; // Damping factor to reduce velocity over time 
+            velocity[i] *= 0.9f; // Damping factor to reduce velocity over time, simulating friction or fluid resistance 
             particles[i].setPosition(particles[i].getPosition() + velocity[i] * dt);
         }
     }

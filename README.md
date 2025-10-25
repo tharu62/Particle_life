@@ -6,7 +6,7 @@ The particles are **bound to a box** and dies if they touch the bounds of the bo
 
 Each type of particle **(defined by color)** have a specific behaviour of attraction or repulsion to each other and with other particles.
 
-![alt text](imageV1.png)
+![alt text](imageV2.png)
 
 ## INSTALL
 To run the program, first download the repository in your prefered folder, you can use this command from terminal :

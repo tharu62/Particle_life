@@ -2,6 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 
+#define RED 0
+#define GREEN 1
+#define BLUE 2
+#define MAGENTA 3
+
+
 /**
  * @brief Initializes the color matrix used for color manipulation.
  */
@@ -14,21 +20,29 @@ void init_colorMatrix(float colorMatrix[][9]){
             else{
                 colorMatrix[i][j] = 0.f;
             }
-        }
+        }  
     }
 
-    colorMatrix[0][0] = 8.f;
-    colorMatrix[1][1] = -1.f;
-    colorMatrix[2][2] = 10.f;
+    colorMatrix[GREEN][GREEN] = -10.f;
+    colorMatrix[RED][RED] = 10.f;
+    colorMatrix[BLUE][BLUE] = 10.f;
+    colorMatrix[MAGENTA][MAGENTA] = 10.f;
+    
+    colorMatrix[GREEN][RED] = -10.f;
+    colorMatrix[GREEN][BLUE] = -10.f;
+    colorMatrix[GREEN][MAGENTA] = -10.f;
+    
+    colorMatrix[RED][GREEN] = -5.f;
+    colorMatrix[RED][BLUE] = -5.f;
+    colorMatrix[RED][MAGENTA] = -5.f;
+    
+    colorMatrix[BLUE][GREEN] = -5.f;
+    colorMatrix[BLUE][RED] = 5.f;
+    colorMatrix[BLUE][MAGENTA] = -5.f;
 
-    colorMatrix[0][1] = -10.f;
-    colorMatrix[1][0] = -10.f;
-
-    colorMatrix[1][2] = -10.f;
-    colorMatrix[2][1] = -10.f;
-
-    colorMatrix[0][2] = -1.f;
-    colorMatrix[2][0] = +1.f;
+    colorMatrix[MAGENTA][GREEN] = -5.f;
+    colorMatrix[MAGENTA][RED] = 5.f;
+    colorMatrix[MAGENTA][BLUE] = -5.f;
 }
 
 /**

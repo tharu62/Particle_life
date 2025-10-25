@@ -13,16 +13,16 @@
 #include "colorMatrix.hpp"
 #include "grid.hpp"
 
-#define DEFAULT_STRENGTH 30.f
+#define DEFAULT_STRENGTH_FACTOR 20.f
+#define DEFAULT_REPULSION_FACTOR 30.f
 #define DEFAULT_PARTICLE_RADIUS 3
-#define DEFAULT_REPULSION_FACTOR 20.f
 #define DEFAULT_PARTICLE_COUNTER 1000
 
 int GRID_CELL_SIZE = DEFAULT_PARTICLE_RADIUS * 30;
 int PARTICLE_COUNT = DEFAULT_PARTICLE_COUNTER;
 int PARTICLE_RADIUS = DEFAULT_PARTICLE_RADIUS;
-float STRENGHT = DEFAULT_STRENGTH;
-float REPULSION_FACTOR = DEFAULT_REPULSION_FACTOR;
+float STRENGHT = DEFAULT_STRENGTH_FACTOR;
+float REPULSION = DEFAULT_REPULSION_FACTOR;
 
 class application {
 
@@ -30,6 +30,7 @@ class application {
         bool moving = false;
         bool paused = false;
         bool opened = false;
+        bool gridOn = false;
         bool resetted = false;
         float colorMatrix[9][9];
         sf::Vector2f oldPos;
@@ -81,9 +82,9 @@ class application {
             acceleration =  new sf::Vector2f[PARTICLE_COUNT];
             
             init_colorMatrix(colorMatrix);
-            SetParticle(particles, PARTICLE_RADIUS);
             // initGrid(grid, 14, 8, GRID_CELL_SIZE); // 1280x720
             initGrid(grid, 20, 20, GRID_CELL_SIZE); 
+            SetParticle(particles, PARTICLE_RADIUS);
             
             /***************** For testing color matrix **********************/
             // std::cout << "Color matrix initialized!" << std::endl;
@@ -110,7 +111,7 @@ class application {
                     
                 }
                 
-                [[likely]] if(!paused){
+                if(!paused){
                     
                     cleanGrid(grid);
                     insertGrid(particles, acceleration, grid, PARTICLE_COUNT, GRID_CELL_SIZE);
@@ -122,7 +123,7 @@ class application {
                     // CollisionUpdate(particles, velocity);
 
                     ImGui::SFML::Update(window, clock.restart());   
-                    manageImGui(window, clock, opened, particles, framerate, PARTICLE_COUNT, PARTICLE_RADIUS, STRENGHT, REPULSION_FACTOR, resetted);
+                    manageImGui(window, clock, opened, particles, framerate, PARTICLE_COUNT, PARTICLE_RADIUS, STRENGHT, REPULSION, resetted, gridOn, colorMatrix);
                     if(resetted){
                         resetted = false;
                         resetParticles();
@@ -143,21 +144,23 @@ class application {
                 }
                 
                 /*********************** For testing grid **********************/
-                // sf::CircleShape center;
-                // center.setRadius(5.f);
-                // center.setFillColor(sf::Color::White);
-                // center.setPosition({0.f, 0.f});
-                // center.setOrigin({5.f, 5.f});
-                // window.draw(center);
-                // sf::CircleShape center2;
-                // center2.setRadius(5.f);
-                // center2.setFillColor(sf::Color::White);
-                // center2.setPosition({640.f, 360.f});
-                // center2.setOrigin({5.f, 5.f});
-                // window.draw(center2);
-                // for(int i=0; i<grid.size(); ++i){
-                //     drawGridBox(window, grid[i].center, GRID_CELL_SIZE);
-                // }
+                if(gridOn){
+                    sf::CircleShape center;
+                    center.setRadius(5.f);
+                    center.setFillColor(sf::Color::White);
+                    center.setPosition({0.f, 0.f});
+                    center.setOrigin({5.f, 5.f});
+                    window.draw(center);
+                    sf::CircleShape center2;
+                    center2.setRadius(5.f);
+                    center2.setFillColor(sf::Color::White);
+                    center2.setPosition({640.f, 360.f});
+                    center2.setOrigin({5.f, 5.f});
+                    window.draw(center2);
+                    for(int i=0; i<grid.size(); ++i){
+                        drawGridBox(window, grid[i].center, GRID_CELL_SIZE);
+                    }
+                }
                 /***************************************************************/
                 
                 ImGui::SFML::Render(window);
