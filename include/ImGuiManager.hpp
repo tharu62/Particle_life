@@ -16,7 +16,7 @@ void manageImGui(sf::RenderWindow &window, sf::Clock &clock, bool &opened, sf::C
     int &PARTICLE_RADIUS, float &STRENGHT, float &REPULSION_FACTOR, bool &resetted, bool &gridOn, float (*colorMatrix)[9]){ 
 
     // set initial window size (width x height) once
-    ImGui::SetNextWindowSize(ImVec2(348.0f, 500.0f), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(342.0f, 512.0f), ImGuiCond_Once);
 
     if(ImGui::Begin("ImGui SFML window", &opened, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove)){
         
@@ -84,7 +84,7 @@ void manageImGui(sf::RenderWindow &window, sf::Clock &clock, bool &opened, sf::C
         const int totalCellsPerSide = 10; // 9 + 1 reference
 
         // Start a child window to contain the grid (fixed size)
-        ImGui::BeginChild("ColorMatrix", ImVec2((totalCellsPerSide * (cellSize + cellPadding) + 23), (totalCellsPerSide * (cellSize + cellPadding))), true);
+        ImGui::BeginChild("ColorMatrix", ImVec2((totalCellsPerSide * (cellSize + cellPadding) + 13), (totalCellsPerSide * (cellSize + cellPadding) + 17)), true);
         
         // Get child origin in screen coordinates
         ImVec2 origin = ImGui::GetCursorScreenPos();
