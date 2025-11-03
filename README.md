@@ -18,9 +18,7 @@ You can find all necessary information in their website.
 
 To compile on **Windows 11**, from the Particle_Life directory use this commands from terminal :
 ```bash
- mkdir build
- cd build
- cmake ..
+ cmake -S . -B build -G "MinGW Makefiles"
  cmake --build build
 ```
 
