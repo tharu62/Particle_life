@@ -13,10 +13,10 @@
  * @brief Manages the ImGui window for particle simulation settings.
  */
 void manageImGui(sf::RenderWindow &window, sf::Clock &clock, bool &opened, sf::CircleShape* particles, int framerate, int &PARTICLE_COUNT, 
-    int &PARTICLE_RADIUS, float &STRENGHT, float &REPULSION_FACTOR, bool &resetted, bool &gridOn, float (*colorMatrix)[9]){ 
+    int &PARTICLE_RADIUS, float &STRENGHT, float &REPULSION_FACTOR, int &NUMBER_OF_COLORS, bool &resetted, bool &gridOn, float (*colorMatrix)[9]){ 
 
     // set initial window size (width x height) once
-    ImGui::SetNextWindowSize(ImVec2(342.0f, 512.0f), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(342.0f, 535.0f), ImGuiCond_Once);
 
     if(ImGui::Begin("ImGui SFML window", &opened, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove)){
         
@@ -73,6 +73,23 @@ void manageImGui(sf::RenderWindow &window, sf::Clock &clock, bool &opened, sf::C
             }
             else{
                 REPULSION_FACTOR = 0.f;
+            }
+        };
+
+        ImGui::Text("Colors %d", NUMBER_OF_COLORS);
+        ImGui::SameLine(171.f);
+        if(ImGui::Button("+##7")){
+            if(NUMBER_OF_COLORS < 7){
+                NUMBER_OF_COLORS += 1;
+            }
+        };
+        ImGui::SameLine(197.f);
+        if(ImGui::Button("-##8")){
+            if(NUMBER_OF_COLORS > 1){
+                NUMBER_OF_COLORS -= 1;
+            }
+            else{
+                NUMBER_OF_COLORS = 1;
             }
         };
 

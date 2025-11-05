@@ -17,10 +17,12 @@
 #define DEFAULT_REPULSION_FACTOR 30.f
 #define DEFAULT_PARTICLE_RADIUS 3
 #define DEFAULT_PARTICLE_COUNTER 1000
+#define DEFAULT_NUMBER_OF_COLORS 4
 
 int GRID_CELL_SIZE = DEFAULT_PARTICLE_RADIUS * 30;
 int PARTICLE_COUNT = DEFAULT_PARTICLE_COUNTER;
 int PARTICLE_RADIUS = DEFAULT_PARTICLE_RADIUS;
+int NUMBER_OF_COLORS = DEFAULT_NUMBER_OF_COLORS;
 float STRENGHT = DEFAULT_STRENGTH_FACTOR;
 float REPULSION = DEFAULT_REPULSION_FACTOR;
 
@@ -123,7 +125,7 @@ class application {
                     // CollisionUpdate(particles, velocity);
 
                     ImGui::SFML::Update(window, clock.restart());   
-                    manageImGui(window, clock, opened, particles, framerate, PARTICLE_COUNT, PARTICLE_RADIUS, STRENGHT, REPULSION, resetted, gridOn, colorMatrix);
+                    manageImGui(window, clock, opened, particles, framerate, PARTICLE_COUNT, PARTICLE_RADIUS, STRENGHT, REPULSION, NUMBER_OF_COLORS, resetted, gridOn, colorMatrix);
                     if(resetted){
                         resetted = false;
                         resetParticles();

@@ -8,6 +8,7 @@
 #include "colorMatrix.hpp"
 
 extern int PARTICLE_COUNT;
+extern int NUMBER_OF_COLORS;
 extern sf::Vector2f topLeftgridCorner;
 extern sf::Vector2f topRightgridCorner;
 extern sf::Vector2f bottomLeftgridCorner;
@@ -32,7 +33,7 @@ void SetParticle(sf::CircleShape* particle, int radius){
         float rand_2 = distribution2(eng);
 
         particle[i].setRadius(radius);
-        particle[i].setFillColor(intToColor(rand()%4));
+        particle[i].setFillColor(intToColor(rand()%NUMBER_OF_COLORS));
         particle[i].setPosition({rand_1, rand_2});
         while(particle[i].getPosition().x <= topLeftgridCorner.x || particle[i].getPosition().x >= topRightgridCorner.x){
             rand_1 = distribution1(eng);
