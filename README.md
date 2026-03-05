@@ -1,4 +1,4 @@
-# PARTICLE LIFE (WORK IN PROGRESS )
+# PARTICLE LIFE
 
 This program is a simulation of **living particles** with a defined set of rules that results in a peculiar behaviour.
 
